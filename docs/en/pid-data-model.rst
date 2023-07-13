@@ -17,22 +17,19 @@ The User attributes carried in the Italian PID are:
     - Unique Identifier
     - Taxpayer identification number
 
-The italian PID is extended according to the `OpenID Identity Assurance Profile [OIDC.IDA] <https://openid.net/specs/openid-connect-4-identity-assurance-1_0-13.html>`_, that enables the binding of the PID to a national trust framework, giving all the evidence of the identity proofing procedures underlying the PID issuing in both remote and proximity flows.
-
-The PID data format and the mechanism through which it is issued into the Wallet Instance and presented to a RP will be detailed in the next sections. 
-
-        
+This section contains all about the data model elements and the encoding formats as specified 
+in the *SD-JWT* and the *ISO/IEC 18013-5* standards and extended by `EIDAS-ARF`_ .
 
 SD-JWT
-======
+------
 
-The PID is given as a Verifiable Credential with JSON payload based on the `Selective Disclosure JWT format <https://datatracker.ietf.org/doc/html/draft-ietf-oauth-selective-disclosure-jwt-04>`_ as specified in `[draft-terbu-sd-jwt-vc-latest] <https://vcstuff.github.io/draft-terbu-sd-jwt-vc/draft-terbu-oauth-sd-jwt-vc.html>`__.
+The PID is given as a digital credential with JSON payload based on the `Selective Disclosure JWT format <https://datatracker.ietf.org/doc/html/draft-ietf-oauth-selective-disclosure-jwt-04>`_ as specified in `[draft-terbu-sd-jwt-vc-latest] <https://vcstuff.github.io/draft-terbu-sd-jwt-vc/draft-terbu-oauth-sd-jwt-vc.html>`__.
 
 An SD-JWT is a JWT that MUST be signed using the Issuer's private key. The SD-JWT payload of the MUST contain the **_sd_alg** claim described in `[SD-JWT]. Section 5.1.2. <https://datatracker.ietf.org/doc/html/draft-ietf-oauth-selective-disclosure-jwt-04>`_ and other claims specified in this section, some of them may be selectively disclosable claims. 
 
 The claim **_sd_alg** indicates the hash algorithm used by the Issuer to generate the digests over the salts and the claim values. The **_sd_alg** claim MUST be set to one of the specified algorithms in Section :ref:`Cryptographic Algorithms <supported_algs>`.
 
-Selectively disclosable claims are omitted from the SD-JWT. Instead, the digests of the respective disclosures and decoy digests are contained as an array in a new JWT claim, **_sd**. 
+Selectively disclosable claims are omitted from the SD-JWT. Instead, the digests of the respective disclosures and decoy digests are contained as an array in a **_sd** JWT claim. 
 
 Each digest value ensures the integrity of, and maps to, the respective Disclosure. Digest values are calculated using a hash function over the disclosures, each of which contains 
 
@@ -48,7 +45,8 @@ The Disclosures are sent to the Holder together with the SD-JWT in the *Combined
 
 See `[draft-terbu-sd-jwt-vc-latest] <https://vcstuff.github.io/draft-terbu-sd-jwt-vc/draft-terbu-oauth-sd-jwt-vc.html>`_ and `[SD-JWT] <https://datatracker.ietf.org/doc/html/draft-ietf-oauth-selective-disclosure-jwt-04>`__ for more details. 
 
-
+SD-JWT Data Elements
+^^^^^^^^^^^^^^^^^^^^
 
 The JOSE header contains the following mandatory parameters:
 
@@ -114,7 +112,11 @@ The following claims MUST be in the JWT payload and MUST NOT be included in the 
             -   **claims**.
       - `[OIDC.IDA. Section 5] <https://openid.net/specs/openid-connect-4-identity-assurance-1_0-13.html#section-5>`_.
 
-The ``verification`` claim contain the information as sub claims regarding the identity proofing evidence during the issuing phase of the PID. The ``claims`` parameter contains the user attributes claims. Some of these additional claims MAY be included in the Disclosures and MAY be selectively disclosed and they are given in the following tables that also specify whether a claim is selectively disclosable (SD) or not (NSD).
+Since the Italian PID is extended according to the `OpenID Identity Assurance Profile [OIDC.IDA] <https://openid.net/specs/openid-connect-4-identity-assurance-1_0-13.html>`_, 
+that enables the binding of the PID to a national trust framework, giving all the evidence of the identity proofing procedures,
+the ``verification`` claim contain the information as sub claims regarding the identity proofing evidence during the issuing phase of the PID. 
+The ``claims`` parameter contains the user attributes claims. Some of these additional claims MAY be included in the Disclosures and MAY be 
+selectively disclosed and they are given in the following tables that also specify whether a claim is selectively disclosable (SD) or not (NSD).
 
 The ``verification`` claim is a JSON structure with all the following mandatory sub-claims.
 
@@ -195,8 +197,8 @@ Finally, the ``claims`` parameter contains the following mandatory claims:
 
 
 
-Non-normative examples
-----------------------
+SD-JWT Examples
+^^^^^^^^^^^^^^^^^^^^^^
 
 In the following, we provide a non-normative example of PID VC in JSON.
 
@@ -393,8 +395,365 @@ The combined format for the PID issuance is given by
 
 
 MDOC-CBOR
-=========
+---------
 
-[TODO]
+The PID MDOC-CBOR data model is defined in 
+ISO/IEC 18013-5, the standard born for the the mobile driving license (mDL) use case. 
+
+The MDOC data elements for the EUDI Wallet PID 
+are those defined in the `EIDAS-ARF`_, these must be encoded as defined in `RFC 8949 - Concise Binary Object Representation (CBOR) <RFC 8949 - Concise Binary Object Representation (CBOR)>`_.
+
+The PID MDOC-CBOR document type uses the namespace `eu.europa.ec.eudiw.pid.1`, 
+according to the reverse domain approach defined in the 
+`EIDAS-ARF`_ and in fully harmonization with the ISO/IEC 18013-5 standard.
+
+The the data elements contained in the document, use the same namespace 
+for the required PID attributes, while the national PID attributes use the domestic
+namespace `eu.europa.ec.eudiw.pid.it.1`, defined in this implementation profile.
+
+.. note::
+
+    This specification publishes the Italian PID MDOC-CBOR namespace, 
+    including all  data element identifiers, their definition 
+    and encoding format. 
 
 
+MDOC-CBOR Data Schema
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+A PID issued in the MDOC-CBOR format must have the following data element:
+
+.. list-table:: 
+    :widths: 20 20 60
+    :header-rows: 1
+
+    * - **Element**
+      - **Encoding**
+      - **Description**
+    * - **docType**
+      - tstr (text string)
+      - The document type. 
+    * - **issuerSigned**
+      - bstr (byte string)
+      - The issuerSigned object containing the `nameSpaces` and the 
+        `issuerAuth` objects.
+
+.. note::
+    The `issuerSigned` contains the `nameSpaces` object and the 
+    `Mobile Security Object`, however sole signed object is
+    the `Mobile Security Object`, while the `nameSpaces` object is not
+    signed.
+
+
+A non-normative example of the PID document is represented below.
+
+.. code-block::
+
+  {
+    "docType": "eu.europa.ec.eudiw.pid.1",
+    "issuerSigned": {
+        "nameSpaces": {
+            "eu.europa.ec.eudiw.pid.1": [
+                {
+                    "digestID": 0,
+                    "random": $binary-random-value,
+                    "elementIdentifier": "family_name",
+                    "elementValue": "Rossi"
+                },
+                {
+                    "digestID": 1,
+                    "random": $binary-random-value,
+                    "elementIdentifier": "given_name",
+                    "elementValue": "Mario"
+                },
+                {
+                    "digestID": 2,
+                    "random": $binary-random-value,
+                    "elementIdentifier": "birth_date",
+                    "elementValue": {
+                        "CBORTag:1004": "2007-10-20"
+                    }
+                },
+                {
+                    "digestID": 3,
+                    "random": $binary-random-value,
+                    "elementIdentifier": "birth_place",
+                    "elementValue": "Rome"
+                },
+                {
+                    "digestID": 4,
+                    "random": $binary-random-value,
+                    "elementIdentifier": "birth_country",
+                    "elementValue": "IT"
+                }
+            ],
+            "eu.europa.ec.eudiw.pid.it.1": [
+                {
+                    "digestID": 0,
+                    "random": $binary-random-value,
+                    "elementIdentifier": "tax_id_code",
+                    "elementValue": "TINIT-XXXXXXXXXXXXXXXX"
+                },
+            ],
+            ]
+        },
+        "issuerAuth": $MobileSecurityObject,
+    },
+  }
+
+nameSpaces
+^^^^^^^^^^^^^
+
+The `nameSpaces` object contains the key value representing the namespaces 
+where each value is an array of `IssuerSignedItems` encoded in CBORTag(24), representing the disclosure information for each digest within the `Mobile Security Object`.
+
+Each digest disclosure object contains the following parameters:
+
+.. list-table:: 
+    :widths: 20 20 60
+    :header-rows: 1
+
+    * - **Name**
+      - **Encoding**
+      - **Description**
+    * - **digestID**
+      - integer
+      - Digest unique identifier within its namespace.
+    * - **random**
+      - bstr (byte string)
+      - Random byte value used as salt for the hash function. This value shall be different for each IssuerSignedItem and shall have a minimum length of 16 bytes.
+    * - **elementIdentifier**
+      - tstr (text string)
+      - User attribute name.
+    * - **elementValue**
+      - depends by the value, see the next table.
+      - User attribute value.
+
+The supported `elementValue` in this specification are the followings:
+
+.. list-table:: 
+    :widths: 20 60
+    :header-rows: 1
+
+    * - **Element**
+      - **Encoding**
+    * - **given_name**
+      - tstr (text string)
+    * - **family_name**
+      - tstr (text string)
+    * - **birth_date**
+      - full-date (CBORTag 1004)
+    * - **birth_place**
+      - tstr (text string)
+    * - **birth_country**
+      - tstr (text string)
+    * - **unique_id**
+      - tstr (text string)
+    * - **tax_id_code**
+      - tstr (text string)
+
+Mobile Security Object
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+The `Mobile Security Object` is an untagged value containing a `COSE Sign1 Document`, as defined in `RFC 9052 - CBOR Object Signing and Encryption (COSE): Structures and Process <https://www.rfc-editor.org/rfc/rfc9052.html>`_. It is composed by:
+
+* protected header
+* unprotected header
+* payload
+* signature.
+
+The protected header must contain the following parameter encoded in CBOR format:
+
+.. list-table:: 
+    :widths: 20 20 60
+    :header-rows: 1
+
+    * - **Element**
+      - **Description**
+      - **Reference**
+    * - **Signature algorithm**
+      - `-7` means ES256, SHA-256. 
+      - RFC8152
+
+.. note::
+    Only the Signature Algorithm must be present in the protected headers, other elements should not be present in the protected header.
+
+
+The unprotected header must contain the following parameter:
+
+.. list-table:: 
+    :widths: 20 20 60
+    :header-rows: 1
+
+    * - **Element**
+      - **Description**
+      - **Reference**
+    * - **x5chain**
+      - Identified with the label 33
+      - `RFC 9360 CBOR Object Signing and Encryption (COSE) - Header Parameters for Carrying and Referencing X.509 Certificates <RFC 9360 CBOR Object Signing and Encryption (COSE) - Header Parameters for Carrying and Referencing X.509 Certificates>`_.
+
+.. note::
+    The `x5chain` is included in the unprotected header with the aim to make the Holder able to update the X.509 certificate chain, related to the `Mobile Security Object` issuer, without breaking the signature.
+
+The payload must contain the following parameter:
+
+.. list-table:: 
+    :widths: 20 20 60
+    :header-rows: 1
+
+    * - **Element**
+      - **Encoding**
+      - **Description**
+    * - **MobileSecurityObjectBytes**
+      - CBORTag(24) 
+      - object, without any `content-type` definition, containing the following attributes:
+
+        * version
+        * digestAlgorithm
+        * valueDigests
+        * deviceKeyInfo
+
+Therein a non-normative example of a decoded `MobileSecurityObjectBytes`, represented below in JSON format:
+
+.. dcode-block::
+    
+    {
+     'version': '1.0',
+     'digestAlgorithm': 'SHA-256',
+     'valueDigests': {
+        'eu.europa.ec.eudiw.pid.1': {
+            0: $digestbinaryvalue,
+            1: $digestbinaryvalue,
+            2: $digestbinaryvalue,
+            3: $digestbinaryvalue,
+            4: $digestbinaryvalue,
+        },
+        'eu.europa.ec.eudiw.pid.it.1': {
+            0: $digestbinaryvalue
+        }
+       },
+     'deviceKeyInfo': {
+        'deviceKey': {
+            1: 2,
+            -1: 1,
+            -2: b'\x961=lc\xe2N3rt+\xfd\xb1\xa3;\xa2\xc8\x97\xdc\xd6\x8a\xb8\xc7S\xe4\xfb\xd4\x8d\xcak\x7f\x9a',
+            -3: b'\x1f\xb3&\x9e\xddA\x88W\xde\x1b9\xa4\xe4\xa4K\x92\xfaHL\xaar,"\x82\x88\xf0\x1d\x0c\x03\xa2\xc3\xd6'}
+        },
+        'docType': 'eu.europa.ec.eudiw.pid.1',
+        'validityInfo': {
+            'signed': Tag(0, '2020-10-01T13:30:02Z'),
+            'validFrom': Tag(0, '2020-10-01T13:30:02Z'),
+            'validUntil': Tag(0, '2021-10-01T13:30:02Z')
+        }
+    }
+
+The `MobileSecurityObjectBytes` attributes are described below:
+
+.. list-table:: 
+    :widths: 20 20 60
+    :header-rows: 1
+
+    * - **Element**
+      - **Encoding**
+      - **Description**
+    * - **version**
+      - tstr
+      - 
+    * - **digestAlgorithm**
+      - tstr
+      - According to the algorithm defined in the protected header.
+    * - **valueDigests**
+      - bstr
+      - Mapped digest by unique id, grouped by namespace.
+    * - **deviceKeyInfo**
+      - Information related to the Wallet Instance's cryptographic keys.
+      - Containing:
+        
+        * **deviceKey**, public key (Holder Key Binding) of the Wallet Instace where this MSO was issued for.
+        * **docType**, public key pair used for authentication. The ‘deviceKey’ element is encoded as an untagged COSE_Key element as specified in RFC 8152.
+        * **validityInfo**, object containing issuance and expiration datetimes.
+
+.. note::
+    The private key related to the public key stored in the `deviceKey` object, is used to authenticate the PID during the presentation phase, where the `DeviceSignedItems` structure is involved (see the presentation phase with MDOC-CBOR).
+
+
+MDOC-CBOR Examples
+^^^^^^^^^^^^^^^^^^^
+
+An MDOC-CBOR is represented below in AF Binary format:
+
+.. code-block:: text
+    
+    a36776657273696f6e63312e3069646f63756d656e747381a367646f6354797065781865752e6575726f70612e65632e65756469772e7069642e316c6973737565725369676e6564a26a6e616d65537061636573a2781865752e6575726f70612e65632e65756469772e7069642e3185d818a100a4686469676573744944006672616e646f6d5820d54af67810e436b912842e188eed143c86dcc3401406361fd741975a5216d9ce71656c656d656e744964656e7469666965726a676976656e5f6e616d656c656c656d656e7456616c7565684d61736365747469d818a101a4686469676573744944016672616e646f6d5820f6f645066abe33ee80a33b19991642a948e05e1a999a0405d72b38371a8e8c8b71656c656d656e744964656e7469666965726b62697274685f706c6163656c656c656d656e7456616c756564526f6d65d818a102a4686469676573744944026672616e646f6d582074472a7395521a9abebf2f54055838cad6680ffc1362ad617e620e9edee2d34b71656c656d656e744964656e7469666965726b66616d696c795f6e616d656c656c656d656e7456616c7565695261666661656c6c6fd818a103a4686469676573744944036672616e646f6d582019162e5db6ca631e64a8c6f2544b8f631584e5e5524911601dc01b59615bc32271656c656d656e744964656e7469666965726a62697274685f646174656c656c656d656e7456616c7565d903ec6a313932322d30332d3133d818a104a4686469676573744944046672616e646f6d5820cdf438ae3d911f56d1001c180c04cd2510eeef70723126b798453efcd58e3bb871656c656d656e744964656e7469666965726d62697274685f636f756e7472796c656c656d656e7456616c7565624954781b65752e6575726f70612e65632e65756469772e7069642e69742e3181d818a105a4686469676573744944056672616e646f6d58207deab1156908843cf021477ee64be6ef89855e177fef6c1a34e44b38dddb102971656c656d656e744964656e7469666965726b7461785f69645f636f64656c656c656d656e7456616c75657554494e49542d5858585858585858585858585858586a69737375657241757468590664d28459021fa30126044864656d6f2d6b6964182159020d30820209308201afa0030201020214495201a8cf727f8e088b05f3a4aba52420daf1e7300a06082a8648ce3d0403023064310b30090603550406130255533113301106035504080c0a43616c69666f726e69613116301406035504070c0d53616e204672616e636973636f31133011060355040a0c0a4d7920436f6d70616e793113301106035504030c0a6d79736974652e636f6d301e170d3233303730353232313231355a170d3233303731353232313231355a3064310b30090603550406130255533113301106035504080c0a43616c69666f726e69613116301406035504070c0d53616e204672616e636973636f31133011060355040a0c0a4d7920436f6d70616e793113301106035504030c0a6d79736974652e636f6d3059301306072a8648ce3d020106082a8648ce3d03010703420004e73c9949473967e4628276af45264132271cdb7fd124711610e8f1ed3657910e08f099237fef088ff7dad20b921d22687e18349d4f86a9d4354d05742400a07fa33f303d303b0603551d1104343032863068747470733a2f2f63726564656e7469616c2d6973737565722e6f6964632d66656465726174696f6e2e6f6e6c696e65300a06082a8648ce3d04030203480030450221008943f01bae512ce2b09a20cd7cf021c35a37a57e469f2e71164f55a7093390990220717a23d8606da5d6593af78571924febced8d3fc01a71010afd363338e88f7afa1182159020d30820209308201afa00302010202143581691b51fc4ad4d83bfff13db6cfa5eced9533300a06082a8648ce3d0403023064310b30090603550406130255533113301106035504080c0a43616c69666f726e69613116301406035504070c0d53616e204672616e636973636f31133011060355040a0c0a4d7920436f6d70616e793113301106035504030c0a6d79736974652e636f6d301e170d3233303730353232313231355a170d3233303731353232313231355a3064310b30090603550406130255533113301106035504080c0a43616c69666f726e69613116301406035504070c0d53616e204672616e636973636f31133011060355040a0c0a4d7920436f6d70616e793113301106035504030c0a6d79736974652e636f6d3059301306072a8648ce3d020106082a8648ce3d03010703420004e73c9949473967e4628276af45264132271cdb7fd124711610e8f1ed3657910e08f099237fef088ff7dad20b921d22687e18349d4f86a9d4354d05742400a07fa33f303d303b0603551d1104343032863068747470733a2f2f63726564656e7469616c2d6973737565722e6f6964632d66656465726174696f6e2e6f6e6c696e65300a06082a8648ce3d0403020348003045022014792657a1277a8c5f95674655f16a50de27284652b812945ef2f39e6f295da8022100f0d088aa1ffa4620096b361a84b9cf70232d7c18362b2e5822997456a8a458355901e8a66776657273696f6e63312e306f646967657374416c676f726974686d667368613235366c76616c756544696765737473a2781865752e6575726f70612e65632e65756469772e7069642e31a5005820ee1511fc134fd8e77b14f5072d9c4c37a713406a326ae4725a86d355cf5f9720015820ea72665ccb72a2626d6c1a2d5ca674deec139373b683337b3b416c33dfc20f2602582004f76b3e64394ff208d769b6ca4e075ecbc72c17b9961a3c1254fd33a33356620358207ee833a6e574c4f586486f5a3fc86e5256d0682bc62353cf39ebc0dd3598fcc7045820bd9009db48ea5511cafda7f8a033aaef02028acbad0760377c3a8128cc361154781b65752e6575726f70612e65632e65756469772e7069642e69742e31a1055820b4df6e90658d355a99819ab230dfe918927c0165db01124741df32fa0526e0836d6465766963654b6579496e666fa1696465766963654b6579f667646f6354797065781865752e6575726f70612e65632e65756469772e7069642e316c76616c6964697479496e666fa3667369676e656456c074323032332d30372d30355432323a31353a30315a6976616c696446726f6d56c074323032332d30372d30355432323a31353a30315a6a76616c6964556e74696c56c074323032382d30372d30335432323a31353a30315a5840813ae368cbcb186be3e7b29aa9dd261b17f65aece799007408381221f19d16dddd795b3dc2b703bf0d96fa6e8266e4953509fdbcf38984096ca6ec8dcb02071c6c6465766963655369676e6564a06673746174757300
+
+
+An MDOC-CBOR is represented below in `Diagnostic Notation`:
+
+.. code-block:: text
+    
+    {
+      "version": "1.0",
+      "documents": [
+        {
+            "docType": "eu.europa.ec.eudiw.pid.1",
+            "issuerSigned": {
+                "nameSpaces": {
+                    "eu.europa.ec.eudiw.pid.1": [
+                        24_0({
+                            0: {
+                                "digestID": 0,
+                                "random": h'876418ea921bf6c61f4934b168f5a05785a7232d12043189a0e7ed44b1a3d29a',
+                                "elementIdentifier": "birth_country",
+                                "elementValue": "IT",
+                            },
+                        }),
+                        24_0({
+                            1: {
+                                "digestID": 1,
+                                "random": h'187e7a359f09d99a7f3afe5b70fe7a15bdeb5379b17ae5d48fdc1762c8e564e5',
+                                "elementIdentifier": "birth_place",
+                                "elementValue": "Rome",
+                            },
+                        }),
+                        24_0({
+                            2: {
+                                "digestID": 2,
+                                "random": h'e3381db62cec1843c053f6f181c2e6ee3a9dddd79b3ee4e875cb29eedea40020',
+                                "elementIdentifier": "birth_date",
+                                "elementValue": 1004_1("1922-03-13"),
+                            },
+                        }),
+                        24_0({
+                            3: {
+                                "digestID": 3,
+                                "random": h'1bcf61a99cafba5da64bbda5fc2f3b0410070ae4c4ceb2c7ca2bab8f2fa9f095',
+                                "elementIdentifier": "given_name",
+                                "elementValue": "Mascetti",
+                            },
+                        }),
+                        24_0({
+                            4: {
+                                "digestID": 4,
+                                "random": h'89882a903d5c39e08686b0f8a0b9fca1ba96ed1aecd17c8844ea55ea4ba39b9a',
+                                "elementIdentifier": "family_name",
+                                "elementValue": "Raffaello",
+                            },
+                        }),
+                    ],
+                    "eu.europa.ec.eudiw.pid.it.1": [
+                        24_0({
+                            5: {
+                                "digestID": 5,
+                                "random": h'11aa7273a2d2daa973f5951f0c34c2fbaea0119f71279090b9619865e552f5d7',
+                                "elementIdentifier": "tax_id_code",
+                                "elementValue": "TINIT-XXXXXXXXXXXXXXX",
+                            },
+                        }),
+                    ],
+                },
+                "issuerAuth": h'd284590220a30126044864656d6f2d6b6964182159020e3082020a308201afa003020102021411fbe1f69d2d1c2aac38555fe397267bed40db1e300a06082a8648ce3d0403023064310b30090603550406130255533113301106035504080c0a43616c69666f726e69613116301406035504070c0d53616e204672616e636973636f31133011060355040a0c0a4d7920436f6d70616e793113301106035504030c0a6d79736974652e636f6d301e170d3233303730353232323132335a170d3233303731353232323132335a3064310b30090603550406130255533113301106035504080c0a43616c69666f726e69613116301406035504070c0d53616e204672616e636973636f31133011060355040a0c0a4d7920436f6d70616e793113301106035504030c0a6d79736974652e636f6d3059301306072a8648ce3d020106082a8648ce3d030107034200048736acb9e284ae54996c595402803fdcef2e99ef9d31f3ea06513dcc679dbf14e48f4dd0e2ce3295cf9c4158f9e14072da25a0b09e077822cf1f604702005e97a33f303d303b0603551d1104343032863068747470733a2f2f63726564656e7469616c2d6973737565722e6f6964632d66656465726174696f6e2e6f6e6c696e65300a06082a8648ce3d0403020349003046022100c5d671bec6868e1463dc96dcaf491ee724a5fcbfc4aff2ddc6aec3ac8ec2c695022100e3e957c6d5b0d142f6ffe3829e30becb210c9ae9f20d72f6685a58ed9c1a294ba1182159020d30820209308201afa00302010202140d32e28fc513cf151f2a6d4823cfa46e16c930e1300a06082a8648ce3d0403023064310b30090603550406130255533113301106035504080c0a43616c69666f726e69613116301406035504070c0d53616e204672616e636973636f31133011060355040a0c0a4d7920436f6d70616e793113301106035504030c0a6d79736974652e636f6d301e170d3233303730353232323132335a170d3233303731353232323132335a3064310b30090603550406130255533113301106035504080c0a43616c69666f726e69613116301406035504070c0d53616e204672616e636973636f31133011060355040a0c0a4d7920436f6d70616e793113301106035504030c0a6d79736974652e636f6d3059301306072a8648ce3d020106082a8648ce3d030107034200048736acb9e284ae54996c595402803fdcef2e99ef9d31f3ea06513dcc679dbf14e48f4dd0e2ce3295cf9c4158f9e14072da25a0b09e077822cf1f604702005e97a33f303d303b0603551d1104343032863068747470733a2f2f63726564656e7469616c2d6973737565722e6f6964632d66656465726174696f6e2e6f6e6c696e65300a06082a8648ce3d0403020348003045022042cbba619cea7957733abe8cc3f4d1808810f078bef44da42d9d6d8ce525039d022100bea9d284f595b057ba6653ca227a2bf4456ecf1387651c2c8111de82d593020b5901e8a66776657273696f6e63312e306f646967657374416c676f726974686d667368613235366c76616c756544696765737473a2781865752e6575726f70612e65632e65756469772e7069642e31a500582062f85d809532321b3456e80c9f7262d0d8e5eff10afcaf5e1b7660e5a4bcd9d6015820ec21324ccac9a11fa17c16de509a3bbbd2b3b6151d0a66d40c79a2133a1d836a025820cb68596fbb3b6c58fb7dc1e1355a91dec8da16557820ce52547aeb0cc3b8182603582033e06223fee9dce67d7254de77efc6d511ecdc71de93576e12fde5b640b0d2f40458209bc489583f528d615cf9bb9e3a6d8985ebc2dd841e9363be9909feb876823401781b65752e6575726f70612e65632e65756469772e7069642e69742e31a1055820d9cdd9efbf5583ceced590bdaad6f9540c0e0f257e37d68cdadf7ee4b9212df26d6465766963654b6579496e666fa1696465766963654b6579f667646f6354797065781865752e6575726f70612e65632e65756469772e7069642e316c76616c6964697479496e666fa3667369676e656456c074323032332d30372d30355432323a32313a32335a6976616c696446726f6d56c074323032332d30372d30355432323a32313a32335a6a76616c6964556e74696c56c074323032382d30372d30335432323a32313a32335a584008b6dab030657451dbb2167d561fb87a8e1db7cb2896a5a2a89eca4798a69d74e373a1bb7b231346c090a96eee670bf528a7e699503bd0d194ff00cfab85a706',
+            },
+        },
+    ],
+    "status": 0,
+  }

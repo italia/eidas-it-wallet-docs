@@ -105,8 +105,6 @@ The JWS payload of the request object is represented below:
     "client_assertion_type":"urn:ietf:params:oauth:client-assertion-type:jwt-key-attestation",
 
 **Step 7:** The PID Provider creates a new request URI representing this new authorization request to be returned to the Wallet Instance. 
-    }
-
 
 .. note::
 
