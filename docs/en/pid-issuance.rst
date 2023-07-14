@@ -43,7 +43,7 @@ The PID Issuance phase is based on the **Authorization Code Flow** with **Pushed
 .. figure:: ../../images/Low-Level-Flow-EUDIW-PID-Issuing.svg
     :figwidth: 100%
     :align: center
-    :target: https://www.plantuml.com/plantuml/svg/bLHTJ-iu47tthnW1qb8frRuZBQ905wf5gwfRn6Fa9jDcrDJE-gEbzzVVSQm4ft1HB-AXySoSENEEntVMIUFyhXRIEwtyReL6Y8RFgA16AWSNhnRD1KWBNeYLVey7VrYmEyvgAgtm0YvVQ5Ev-zhZiFRUw4DVBeUnDrdNw62cc88giCqv25GbS1VnPUxSw3sL4GzM9pdpsUCmWGJ_7M1y2_u6zCf9Kd3KtW1d2WzZ3Xnku8XM2AEqGz1xD720oxVdsN8gOWL8gCawq6jO6cyTbf0s2dpROkuqlkK-XLPhCZjm5OB56Wj7Md7ri4fuxixDzNROEoEMSlRql7nQJAV_YXE9eAYms5h6bgvja682MGXwSAyszZVoeMoxIrLsyvEpi4CdI-baoXs26C3q3Kh7mFyyJ7cK4e5fqPhGn1mWpfbF5h30_psoBDS6RQELnTmT6yoWg0cLowdCslAygC88QeEdtpcpg3IdcOZKbqfhqGJQAM9o_DTLLAKJPU8SbxU3NeqWLPEorK3DLArFKaRGSzJy7iVIHadd3N9b2fpGX618wyHUrbIIEq9YXQ1uCtkXexwiT1GgzuOomFU6MFgSr2XUSYxnyWOcdbKrz2CswbrAR4bWHiBBjf9-kr0CXVRTqdZBtvAnk8gA27OWLm7E7YV_mJC_4-tqHPX9kMHkWZW3d71950WtA8EW8lRK3sVc9tTyWofuYV0urtFOul6NiSPeTd6jpN3JdDwY0gRUQE8PajLOSgHNBmwU0ALgRenKhhlYkkpserktizSX-5AImQ8pXk8eaKkgXYmAj3PloMTnXeYPN2R6pvLM1VO_ye_WbngkELO54LkP2YOJd9VrvpSbQi3_ZMRorWQlhcENQ4-I_xq3QP_UXiI5XpxwXHM93F5b71ZKL-ObhabHb9ZxxwJBOjOelVhTUtt_yZeL2zoGTNmgwphiVa9pRB3ceKeGf28Q0xTpHSVZglnfSA_ZJqZUXDxJPBB4s8xTHxUpRMHH-qSeYD4kYxVnLKlohDC6KtVlc9pVrJy1
+    :target: https://www.plantuml.com/plantuml/svg/bLHHRnit37xNho3I0ci01tiFiA9EupN6Wi78KlJn8D_HFY9dwIPHSRrVF-fattXf5hX17iuI-V7Zzv7w5Da6JhlEsCJUfTqQWp6zd55DlNKC5ryZXWkm4P8nQ_-z7FmI8Uuagc-zmmjuTq_Rbc-wXDFSc-3tOxgTtdspNOSCIoSKN8r3pDwWQq2gc5TZLy4_KtF4Mx-8MIrlfm5av6yFLnyXNODVioK71vy2IAH9S2KN-siuO3GcECy8_Xa3xE7Tjxlbuy8SConq51dy1Xv3YemDw4APxv0ibQu-IftQkms57N2B4B73ciaxoPvccIJLfRX_cjQUaKYv_7Bt-ELXiVZJl908wXRhfoZObeS26XCeGjP3QWrtlwCSsg6wTSsfV-88EsJRMBQQEsGnGEW7j2p0VtnUI2iDWj2Y3M4unf34hEOFy81_9umC7mB6thk85Hzwd47T4Jgkg9aDwLNTvXRS5b_-heH5woKi5AGnrSQ88TFMYEhuj_T5bPCeSsP97nfzVmbQJPgj9sfgjNwGie2Ue-RRE96spd8AA9aQMD64RCZWnBFjg24-WBB2K9dCKUYYhoXTXAfIe1dWzvv4-ehSPHboIKds6kP9L0tqJoaqkgHiKJ2N9jaXatuwqKo5JgUbIH43MC6IBAeBs9wu1LpUpl-2Up-7EzgsWm9rxiknwfsEVS0BFag5F4Kpo4hYI7z_PhoQyoswx2V2xSglu0aF_tlN1ozERdoORXlx9tGWr7jFqeDQZqUv6HKipIiWhUWsMCUdCVVDQKTEAtVsIcHl6WfOdyoXqahXejMmTOqnLWFvMUcXOAg14lpAULVZ-57zT_cgXXkvQxE8WqoraCdks-x7TwLe8F-zZr6OPAy-b2h57XN_jWEwZh9XTE7pUFkA5Lg6F8fJWyRCgi4DEIeII_sTvLc9kjJZVtgpR-w_Bim3RYcodChQv_rNDAy2TfQn0KEke0dmq5TnlApBhm6VVVa4qBjHfD6TAMEFx5IrisqKKSU7Q10ZBqkAvMLJSP5zGEtk9o6NTjs_
 
     PID Issuance - Detailed flow
 
@@ -765,7 +765,7 @@ Below a non-normative example of an Entity Configuration containing an `openid_c
             "pushed_authorization_request_endpoint": "https://pid-provider.example.org/connect/par",
             "dpop_signing_alg_values_supported": ["RS256", "RS512", "ES256", "ES512"],
             "credential_endpoint": "https://pid-provider.example.org/credential",
-            "credentials_supported": {
+            "credentials_supported": [{
               "eu.eudiw.pid.it": {
                 "format": "vc+sd-jwt",
                 "cryptographic_binding_methods_supported": ["jwk"],
@@ -869,7 +869,7 @@ Below a non-normative example of an Entity Configuration containing an `openid_c
                   }
                 }
               }
-            }
+            }]
           },
 
           "federation_entity": {

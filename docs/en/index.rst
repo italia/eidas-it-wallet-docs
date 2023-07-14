@@ -60,7 +60,7 @@ Index of content
 ----------------
 
 .. toctree:: 
-   :maxdepth: 2
+   :maxdepth: 3
    
    ssi-introduction.rst
    defined-terms.rst

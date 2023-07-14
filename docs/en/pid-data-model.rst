@@ -48,7 +48,8 @@ The Disclosures are sent to the Holder together with the SD-JWT in the *Combined
 
 See `[draft-terbu-sd-jwt-vc-latest] <https://vcstuff.github.io/draft-terbu-sd-jwt-vc/draft-terbu-oauth-sd-jwt-vc.html>`_ and `[SD-JWT] <https://datatracker.ietf.org/doc/html/draft-ietf-oauth-selective-disclosure-jwt-04>`__ for more details. 
 
-
+SD-JWT parameters
+-----------------
 
 The JOSE header contains the following mandatory parameters:
 
@@ -105,7 +106,7 @@ The following claims MUST be in the JWT payload and MUST NOT be included in the 
       - JSON object containing the proof-of-possession key materials. By including a **cnf** (confirmation) claim in a JWT, the issuer of the JWT declares that the presenter is in control of the private key related to the public one defined in the **cnf** parameter. The recipient MUST cryptographically verify that the presenter is in control of that key. 
       - `[RFC7800, Section 3.1] <https://www.iana.org/go/rfc7800>`_.
     * - **type**
-      - Credential type as a string, MUST be set to ``eu.eudiw.pid.it``.
+      - Credential type as a string, MUST be set to ``PersonIdentificationData``.
       - `[draft-terbu-sd-jwt-vc-latest. Section 4.2.2.2] <https://vcstuff.github.io/draft-terbu-sd-jwt-vc/draft-terbu-sd-jwt-vc.html#section-4.2.2.2>`__.
     * - **verified_claims**
       - JSON object containing the following sub-elements: 
@@ -114,7 +115,11 @@ The following claims MUST be in the JWT payload and MUST NOT be included in the 
             -   **claims**.
       - `[OIDC.IDA. Section 5] <https://openid.net/specs/openid-connect-4-identity-assurance-1_0-13.html#section-5>`_.
 
-The ``verification`` claim contain the information as sub claims regarding the identity proofing evidence during the issuing phase of the PID. The ``claims`` parameter contains the user attributes claims. Some of these additional claims MAY be included in the Disclosures and MAY be selectively disclosed and they are given in the following tables that also specify whether a claim is selectively disclosable (SD) or not (NSD).
+
+Verification field 
+------------------
+
+The ``verification`` claim contain the information as sub claims regarding the identity proofing evidence during the issuing phase of the PID.  Some of these additional claims MAY be included in the Disclosures and MAY be selectively disclosed and they are given in the following tables that also specify whether a claim is selectively disclosable (SD) or not (NSD).
 
 The ``verification`` claim is a JSON structure with all the following mandatory sub-claims.
 
@@ -162,7 +167,11 @@ The ``record`` MUST have at least the following sub parameters:
 .. warning::
   Note that the sub-claims of the **evidence** parameter are not selectively disclosable separately, thus, for example, the User cannot give only the *record type* without disclosure the *record source* (organization name, identifier and country that hendles the User identity proofing). 
 
-Finally, the ``claims`` parameter contains the following mandatory claims:
+Claims field 
+------------
+
+The ``claims`` parameter contains the user attributes claims with the following mandatory fields:
+
 
 .. list-table:: 
     :widths: 20 60 20
@@ -364,31 +373,7 @@ The combined format for the PID issuance is given by
 
 .. code-block::
 
-  eyJhbGciOiAiRVMyNTYifQ.eyJpc3MiOiAiaHR0cHM6Ly9waWRwcm92aWRlci5pdCIsI
-  CJpYXQiOiAxNjgzMDAwMDAwLCAiZXhwIjogMTg4MzAwMDAwMCwgInZlcmlmaWVkX2NsY
-  WltcyI6IHsidmVyaWZpY2F0aW9uIjogeyJfc2QiOiBbIk9HbTdyeVhndDVYemxldnAtS
-  HUtVVRrMGEtVHhBYVBBb2JxdjFwSVdNZnciXSwgInRydXN0X2ZyYW1ld29yayI6ICJla
-  WRhcyIsICJhc3N1cmFuY2VfbGV2ZWwiOiAiaGlnaCJ9LCAiY2xhaW1zIjogeyJfc2QiO
-  iBbIjhKam96QmZvdk1OdlEzSGZsbVBXeTRPMTlHcHhzNjFGV0hqWmViVTU4OUUiLCAiQ
-  m9NR2t0VzFyYmlrbnR3OEZ6eF9CZUw0WWJBbmRyNkFIc2RncGF0RkNpZyIsICJDRkxHe
-  mVudEdOUkZuZ25MVlZRVmNvQUZpMDVyNlJKVVgtcmRiTGRFZmV3IiwgIkpVX3NUYUhDb
-  mdTMzJYLTBhakhyZDEtSENMQ2twVDVZcWdjZlFtZTE2OHciLCAiVlFJLVMxbVQxS3hmc
-  TJvOEo5aW83eE1NWDJNSXhhRzlNOVBlSlZxck1jQSIsICJ6VmRnaGNtQ2xNVldsVWdHc
-  0dwU2tDUGtFSFo0dTlvV2oxU2xJQmxDYzFvIl19fSwgIl9zZF9hbGciOiAic2hhLTI1N
-  iJ9.gsvYGCpWbnx8Dkd5ofKq-MtZplFFV49uY42Yf9S3rZe_SPTjg_AWdpm4bvSOhNbe
-  P0aMzFGtftSk3-3sufXBdw~WyIyR0xDNDJzS1F2ZUNmR2ZyeU5STjl3IiwgImV2aWRlb
-  mNlIiwgW3sidHlwZSI6ICJlbGVjdHJvbmljX3JlY29yZCIsICJyZWNvcmQiOiB7InR5c
-  GUiOiAiZWlkYXMuaXQuY2llIiwgInNvdXJjZSI6IHsib3JnYW5pemF0aW9uX25hbWUiO
-  iAiTWluaXN0ZXJvIGRlbGwnSW50ZXJubyIsICJvcmdhbml6YXRpb25faWQiOiAibV9pd
-  CIsICJjb3VudHJ5X2NvZGUiOiAiSVQifX19XV0~WyJlbHVWNU9nM2dTTklJOEVZbnN4Q
-  V9BIiwgInVuaXF1ZV9pZCIsICJ4eHh4eHh4eC14eHh4LXh4eHgteHh4eC14eHh4eHh4e
-  Hh4eHgiXQ~WyI2SWo3dE0tYTVpVlBHYm9TNXRtdlZBIiwgImdpdmVuX25hbWUiLCAiTW
-  FyaW8iXQ~WyJlSThaV205UW5LUHBOUGVOZW5IZGhRIiwgImZhbWlseV9uYW1lIiwgIlJ
-  vc3NpIl0~WyJRZ19PNjR6cUF4ZTQxMmExMDhpcm9BIiwgImJpcnRoZGF0ZSIsICIxOTg
-  wLTAxLTEwIl0~WyJBSngtMDk1VlBycFR0TjRRTU9xUk9BIiwgInBsYWNlX29mX2JpcnR
-  oIiwgeyJjb3VudHJ5IjogIklUIiwgImxvY2FsaXR5IjogIlJvbWUifV0~WyJQYzMzSk0
-  yTGNoY1VfbEhnZ3ZfdWZRIiwgInRheF9pZF9jb2RlIiwgIlRJTklULVhYWFhYWFhYWFh
-  YWFhYWFgiXQ
+  eyJ0eXAiOiJ2YytzZC1qd3QiLCJhbGciOiJSUzUxMiIsImtpZCI6ImQxMjZhNmE4NTZmNzcyNDU2MDQ4NGZhOWRjNTlkMTk1IiwidHJ1c3RfY2hhaW4iOlsiTkVoUmRFUnBZbmxIWTNNNVdsZFdUV1oyYVVobSAuLi4iLCJleUpoYkdjaU9pSlNVekkxTmlJc0ltdHBaQ0k2IC4uLiIsIklrSllkbVp5Ykc1b1FVMTFTRkl3TjJGcVZXMUIgLi4uIl19.eyJpc3MiOiJodHRwczovL3BpZHByb3ZpZGVyLmV4YW1wbGUub3JnIiwic3ViIjoiTnpiTHNYaDh1RENjZDdub1dYRlpBZkhreFpzUkdDOVhzLi4uIiwianRpIjoidXJuOnV1aWQ6NmM1YzBhNDktYjU4OS00MzFkLWJhZTctMjE5MTIyYTllYzJjIiwiaWF0IjoxNTQxNDkzNzI0LCJleHAiOjE1NDE0OTM3MjQsInN0YXR1cyI6Imh0dHBzOi8vcGlkcHJvdmlkZXIuZXhhbXBsZS5vcmcvc3RhdHVzIiwiY25mIjp7Imp3ayI6eyJrdHkiOiJSU0EiLCJ1c2UiOiJzaWciLCJuIjoiMVRhLXNFIOKApiIsImUiOiJBUUFCIiwia2lkIjoiWWhORlMzWW5DOXRqaUNhaXZoV0xWVUozQXh3R0d6Xzk4dVJGYXFNRUVzIn19LCJ0eXBlIjoiUGVyc29uSWRlbnRpZmljYXRpb25EYXRhIiwidmVyaWZpZWRfY2xhaW1zIjp7InZlcmlmaWNhdGlvbiI6eyJfc2QiOlsiT0dtN3J5WGd0NVh6bGV2cC1IdS1VVGswYS1UeEFhUEFvYnF2MXBJV01mdyJdLCJ0cnVzdF9mcmFtZXdvcmsiOiJlaWRhcyIsImFzc3VyYW5jZV9sZXZlbCI6ImhpZ2gifSwiY2xhaW1zIjp7Il9zZCI6WyI4SmpvekJmb3ZNTnZRM0hmbG1QV3k0TzE5R3B4czYxRldIalplYlU1ODlFIiwiQm9NR2t0VzFyYmlrbnR3OEZ6eF9CZUw0WWJBbmRyNkFIc2RncGF0RkNpZyIsIkNGTEd6ZW50R05SRm5nbkxWVlFWY29BRmkwNXI2UkpVWC1yZGJMZEVmZXciLCJKVV9zVGFIQ25nUzMyWC0wYWpIcmQxLUhDTENrcFQ1WXFnY2ZRbWUxNjh3IiwiVlFJLVMxbVQxS3hmcTJvOEo5aW83eE1NWDJNSXhhRzlNOVBlSlZxck1jQSIsInpWZGdoY21DbE1WV2xVZ0dzR3BTa0NQa0VIWjR1OW9XajFTbElCbENjMW8iXX19LCJfc2RfYWxnIjoic2hhLTI1NiJ9.WzEiFaOjnobQisjTQ92JtKEXRN-2Sgvjklpu4IdC_cT2T6Tm8Z6sqbVy6n94AAEv-HFSv5JoSt6YjPDnGzOxN_W_131rILU8YaiNt8w31nRGIvHjJIC0w-hHIcG1LmvJshSMcT3RHeApRCmsO7xkHWmUsjt37dOzEagEti5i47hnZAbu7vWXsvUlBNNN8v7tJBLspO2Q0vnWhEDX1hQ7IH1b8oKh-_aQrhwVm9Bcs9CG8o6N9iqubCSpFI6Gty4ZZgHEb95knETVhw8IL10Z9P_Hr9twXZQaCCC8xrNh4afwR9TiDQzTr92m7luyvDfmzVgHCponI7VBhqmRqZVYQyDhq6EJbtRtIsYenla5NSKBjV8Etdlec94vJAHZNzue9aNUQeXae55V5m5O9wLoWhgV2vl4xV5C-N5s5Uzs08GAxo-CUaNOD3BQE9vfrT47IBCm4hUCnvDise_aWNCeKOQABV1J9_tV9lWZsECVuUuWWwELHCUXgdyiA3QtUtXz
 
 
 
